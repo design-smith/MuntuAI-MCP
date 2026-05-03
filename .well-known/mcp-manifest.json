@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "1.0",
+  "name": "MuntuAI MCP",
+  "description": "MCP server for MuntuAI — an outreach automation platform. Agents can create campaigns, manage domains and senders, import leads, review drafts, and monitor performance via JSON-RPC 2.0 over HTTP.",
+  "homepage": "https://muntuai.com",
+  "documentation": "https://github.com/muntuai/muntuai-mcp",
+  "endpoint": "https://api.muntuai.com/api/mcp",
+  "transport": "http",
+  "protocol": "mcp",
+  "protocolVersion": "2025-03-26",
+  "notes": [
+    "Current production server protocol revision is 2025-03-26.",
+    "Clients should send a stable mcp-session-id header for the lifetime of one logical session when possible."
+  ],
+  "authentication": {
+    "type": "bearer",
+    "description": "Bearer token in the format mnt_<keyId>.<secret>. Create keys in MuntuAI Settings → Agent Keys.",
+    "header": "Authorization",
+    "format": "Bearer mnt_<keyId>.<secret>"
+  },
+  "autonomyLevels": [
+    {
+      "level": "observer",
+      "description": "Read-only access. Can read campaigns, domains, senders, events, and leads.",
+      "rateLimit": "60 requests/minute"
+    },
+    {
+      "level": "copilot",
+      "description": "Read + create + modify. Can run campaigns end-to-end: import leads, create campaigns, launch, review drafts, send, manage domains and senders.",
+      "rateLimit": "120 requests/minute"
+    },
+    {
+      "level": "autonomous",
+      "description": "Full access. Can pause/resume campaigns, pause/delete senders, and all copilot actions.",
+      "rateLimit": "120 requests/minute"
+    }
+  ],
+  "resources": [
+    {
+      "name": "workspace",
+      "uriTemplate": "muntu://workspace/{workspaceId}",
+      "description": "Workspace profile, policy settings, and infrastructure counts."
+    },
+    {
+      "name": "campaigns",
+      "uriTemplate": "muntu://campaigns/{workspaceId}?cursor=0&limit=20",
+      "description": "All campaigns (active workflows and draft plans). Paginated."
+    },
+    {
+      "name": "domains",
+      "uriTemplate": "muntu://domains/{workspaceId}?cursor=0&limit=50",
+      "description": "All workspace domains with verification status and DNS requirements. Paginated."
+    },
+    {
+      "name": "senders",
+      "uriTemplate": "muntu://senders/{workspaceId}?cursor=0&limit=50",
+      "description": "All email sender accounts with status and connection health. Paginated."
+    },
+    {
+      "name": "campaign-plans",
+      "uriTemplate": "muntu://campaign-plans/{workspaceId}?cursor=0&limit=20",
+      "description": "Draft review queue — campaign plans pending approval. Paginated."
+    },
+    {
+      "name": "events",
+      "uriTemplate": "muntu://events/{workspaceId}?cursor=0&eventType=&resourceType=&actorType=",
+      "description": "Workspace system events. Filterable by eventType, resourceType, actorType. Paginated."
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_agent_key_info",
+      "minAutonomy": "observer",
+      "description": "Return metadata about the current agent key: name, autonomy level, workspace, expiry."
+    },
+    {
+      "name": "get_campaign_performance",
+      "minAutonomy": "observer",
+      "description": "Live performance metrics for a campaign: lead status counts, open/reply/bounce rates."
+    },
+    {
+      "name": "list_campaign_drafts",
+      "minAutonomy": "observer",
+      "description": "All drafted emails for a campaign."
+    },
+    {
+      "name": "sample_campaign_drafts",
+      "minAutonomy": "observer",
+      "description": "Random sample of drafted emails for quality review."
+    },
+    {
+      "name": "get_lead_group_details",
+      "minAutonomy": "observer",
+      "description": "Lead status counts for a workflow, by workflowId or name."
+    },
+    {
+      "name": "get_lead_sample",
+      "minAutonomy": "observer",
+      "description": "Sample of leads with enrichment data."
+    },
+    {
+      "name": "list_managed_domains",
+      "minAutonomy": "observer",
+      "description": "All domains with verification status and next-action hint."
+    },
+    {
+      "name": "check_domain_status",
+      "minAutonomy": "observer",
+      "description": "DNS verification status for a specific domain."
+    },
+    {
+      "name": "list_ready_senders",
+      "minAutonomy": "observer",
+      "description": "Senders currently ready to send campaigns."
+    },
+    {
+      "name": "get_sender_health",
+      "minAutonomy": "observer",
+      "description": "Health snapshot and readiness gates for a sender."
+    },
+    {
+      "name": "create_campaign",
+      "minAutonomy": "copilot",
+      "description": "Create an outreach campaign with leads, senders, and email configuration."
+    },
+    {
+      "name": "update_campaign_settings",
+      "minAutonomy": "copilot",
+      "description": "Update an existing campaign's configuration."
+    },
+    {
+      "name": "launch_campaign",
+      "minAutonomy": "copilot",
+      "description": "Start the enrichment → drafting → sending pipeline. Returns immediately."
+    },
+    {
+      "name": "send_campaign_drafts",
+      "minAutonomy": "copilot",
+      "description": "Send drafted emails after review. Optionally filter by leadIds."
+    },
+    {
+      "name": "import_leads",
+      "minAutonomy": "copilot",
+      "description": "Import leads into a workflow from array or CSV URL."
+    },
+    {
+      "name": "enrich_lead_sample",
+      "minAutonomy": "copilot",
+      "description": "Enrich a sample of leads (up to 5). Emits enrichment.sample_complete when done."
+    },
+    {
+      "name": "generate_email_preview",
+      "minAutonomy": "copilot",
+      "description": "Generate a preview email for a lead without persisting it."
+    },
+    {
+      "name": "refine_email_preview",
+      "minAutonomy": "copilot",
+      "description": "Regenerate a preview email incorporating user feedback."
+    },
+    {
+      "name": "generate_campaign_guide",
+      "minAutonomy": "copilot",
+      "description": "Generate sampleEmail and outreachGuide from a campaign brief."
+    },
+    {
+      "name": "add_domain",
+      "minAutonomy": "copilot",
+      "description": "Register a sending domain and get DNS records to publish."
+    },
+    {
+      "name": "trigger_domain_verification",
+      "minAutonomy": "copilot",
+      "description": "Trigger DNS verification after records are published."
+    },
+    {
+      "name": "create_sender",
+      "minAutonomy": "copilot",
+      "description": "Create a managed email sender on a verified domain."
+    },
+    {
+      "name": "assign_sender_to_campaign",
+      "minAutonomy": "copilot",
+      "description": "Assign a ready sender to a campaign."
+    },
+    {
+      "name": "subscribe_events",
+      "minAutonomy": "copilot",
+      "description": "Register a webhook endpoint to receive workspace events."
+    },
+    {
+      "name": "submit_campaign_plan",
+      "minAutonomy": "copilot",
+      "description": "Submit a legacy draft-review artifact for policy evaluation."
+    },
+    {
+      "name": "approve_campaign_plan",
+      "minAutonomy": "copilot",
+      "description": "Approve a pending legacy draft-review artifact."
+    },
+    {
+      "name": "pause_campaign",
+      "minAutonomy": "autonomous",
+      "description": "Pause a running campaign at the next batch checkpoint."
+    },
+    {
+      "name": "resume_campaign",
+      "minAutonomy": "autonomous",
+      "description": "Resume a paused campaign from its last checkpoint."
+    },
+    {
+      "name": "pause_sender",
+      "minAutonomy": "autonomous",
+      "description": "Pause a sender account."
+    },
+    {
+      "name": "delete_sender",
+      "minAutonomy": "autonomous",
+      "description": "Delete a managed sender and its inbox."
+    }
+  ],
+  "webhooks": {
+    "supported": true,
+    "registrationTool": "subscribe_events",
+    "signatureHeader": "X-Muntu-Signature",
+    "signatureFormat": "sha256=<hex>",
+    "algorithm": "HMAC-SHA256",
+    "retryAttempts": 6,
+    "timeoutSeconds": 10,
+    "requiresHttps": true
+  },
+  "rateLimit": {
+    "observer": { "requestsPerMinute": 60, "window": "rolling 60s" },
+    "copilot": { "requestsPerMinute": 120, "window": "rolling 60s" },
+    "autonomous": { "requestsPerMinute": 120, "window": "rolling 60s" }
+  }
+}
