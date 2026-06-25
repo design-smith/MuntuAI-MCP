@@ -1,6 +1,6 @@
 # Tools
 
-MuntuAI MCP exposes 30 tools plus one built-in (`subscribe_events`). All tools require authentication via a bearer token and enforce the caller's autonomy level.
+MuntuAI MCP exposes 34 tools plus one built-in (`subscribe_events`). All tools require authentication via a bearer token and enforce the caller's autonomy level.
 
 ---
 
@@ -38,6 +38,10 @@ MuntuAI MCP exposes 30 tools plus one built-in (`subscribe_events`). All tools r
 | [`resume_campaign`](campaigns.md#resume_campaign) | autonomous | Campaigns | Resume a paused campaign |
 | [`pause_sender`](senders.md#pause_sender) | autonomous | Senders | Pause a sender account |
 | [`delete_sender`](senders.md#delete_sender) | autonomous | Senders | Delete a managed sender |
+| [`list_crm_connections`](crm.md#list_crm_connections) | observer | CRM | List connected CRMs |
+| [`query_crm`](crm.md#query_crm) | copilot | CRM | Natural-language query against a connected CRM |
+| [`create_campaign_from_crm_result`](crm.md#create_campaign_from_crm_result) | copilot | CRM | Launch a campaign from CRM query results |
+| [`get_crm_schema`](crm.md#get_crm_schema) | observer | CRM | Fetch field schema for a connected CRM |
 
 ---
 
@@ -49,6 +53,7 @@ MuntuAI MCP exposes 30 tools plus one built-in (`subscribe_events`). All tools r
 - **[Domains](domains.md)** — Register and verify sending domains
 - **[Email Generation](email-generation.md)** — Preview and guide generation
 - **[Meta](meta.md)** — Key info and webhook registration
+- **[CRM](crm.md)** — Query HubSpot, Salesforce, Pipedrive, and Zoho CRM
 
 ---
 

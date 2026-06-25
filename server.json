@@ -1,0 +1,25 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.design-smith/muntuai-mcp",
+  "title": "MuntuAI",
+  "description": "Hosted MCP server for MuntuAI outreach campaigns, leads, senders, domains, and analytics.",
+  "repository": {
+    "url": "https://github.com/design-smith/MuntuAI-MCP",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.muntuai.com/api/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer token in the format: Bearer mnt_<keyId>.<secret>. Create an agent key in MuntuAI Settings -> Agent Keys.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
